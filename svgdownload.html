@@ -1,57 +1,120 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <title>wordtree</title>
+  <meta charset="utf-8">
+  <title>D3绘制SVG保存到本地</title>
 </head>
+
 <body>
-<script src="https://cdn.bootcdn.net/ajax/libs/d3/3.5.1/d3.js" charset="utf-8"></script>
-<script>
-    "use strict"
-    var w=window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth;
-    var h=window.innerHeight||document.documentElement.clientWidth||document.body.clientHeight;
-	var mySvg  = d3.select("body") //选择<body>里的svgbox
+  <!-- svg下载有关 -->
+  <button onclick="downloadPhoto()">下载svg</button>
+  <button onclick="downloadPhoto('png')">下载png</button>
+  <!-- 放置svg的盒子，里面只有svg画布,给xml根标签 -->
+  <div id="svgbox"></div>
+  <div id="svgdataurl"></div>
+  <canvas style="display:none"></canvas>
+  <!--  -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/d3/3.5.1/d3.js" charset="utf-8"></script>
+  <script>
+    function drawSvg() {
+      "use strict"
+      var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+      var h = window.innerHeight || document.documentElement.clientWidth || document.body.clientHeight;
+      var mySvg = d3.select("#svgbox") //选择<body>里的svgbox
         .append("svg") //在<body>中添加<svg>
-		.attr("width",w*0.98)
-		.attr("height",h*0.98).node()
+        .attr("width", w * 0.98)
+        .attr("height", h * 0.98).node()
 
-    var rate=0.7;
-    var x0=w*0.5;
-    var y0=h*0.65;
-    var count=7;
-    var str='猛男色文字树';
-    var fontsize=count*2;
-    var length=str.length*fontsize;
-    var numcount=0;
-    var title2=document.createElement("text");
-    mySvg.appendChild(title2)
-    function show(x0,y0,length,rate,a,count){
-        var fontsize=count*2
-        var length=str.length*fontsize;
-        var x1=x0;
-        var y1=y0;
-        var x2=x1+length*Math.cos(a)
-        var y2=y1+length*Math.sin(a)
-        numcount=numcount+1;
-        var myTest2=document.createElement("text");
+      var rate = 0.7;
+      var x0 = w * 0.5;
+      var y0 = h * 0.75;
+      var count = 7;
+      var str = '猛男色文字树纯享版';
+      var fontsize = count * 2;
+      var length = str.length * fontsize;
+      var numcount = 0;
+      var title2 = document.createElement("text");
+      mySvg.appendChild(title2)
+
+      function show(x0, y0, length, rate, a, count) {
+        var fontsize = count * 2
+        var length = str.length * fontsize;
+        var x1 = x0;
+        var y1 = y0;
+        var x2 = x1 + length * Math.cos(a)
+        var y2 = y1 + length * Math.sin(a)
+        numcount = numcount + 1;
+        var myTest2 = document.createElement("text");
         mySvg.appendChild(myTest2);
-        myTest2.outerHTML="<text id="+numcount+" x="+x1+" y="+y1+" style='fill:rgb("+(255-10*count)+","+(230-20*count)+","+(230-20*count)+");font-size:"+fontsize+"' transform='rotate("+a*180/Math.PI+","+x1+","+y1+")'>"+str+"</text>";
-        var ahl=a-Math.PI/5*(0.7+0.3*Math.random());
-        var ahr=a+Math.PI/3*(0.7+0.3*Math.random());
-        var all=a-Math.PI/3;
-        if(count<=1){
-            var myCircle=document.createElement("ellipse");
-            mySvg.appendChild(myCircle);
-            // myCircle.outerHTML="<circle cx="+x1+" cy="+y1+" r="+(6*Math.random())+" stroke='pink' stroke-width='2.5' fill='red'/>";  
-            myCircle.outerHTML="<ellipse cx="+x1+" cy="+y1+" rx="+(6*Math.random())+" ry="+(3*Math.random())+" fill='red' stroke='pink' stroke-width='2.5'/>"    
-          }
-        if(count>0){
-            show(x2,y2,length*rate,rate,ahl,count-1);
-            show(x2,y2,length*rate,rate,ahr,count-1);
-            show(x2,y2,length*rate,rate,all,count-1);
+        myTest2.outerHTML = "<text id=" + numcount + " x=" + x1 + " y=" + y1 + " style='fill:rgb(" + (255 - 10 *
+            count) + "," + (230 - 20 * count) + "," + (230 - 20 * count) + ");font-size:" + fontsize +
+          "' transform='rotate(" + a * 180 / Math.PI + "," + x1 + "," + y1 + ")'>" + str + "</text>";
+        var ahl = a - Math.PI / 5 * (0.7 + 0.3 * Math.random());
+        var ahr = a + Math.PI / 3 * (0.7 + 0.3 * Math.random());
+        var all = a - Math.PI / 3;
+        if (count <= 1) {
+          var myCircle = document.createElement("ellipse");
+          mySvg.appendChild(myCircle);
+          // myCircle.outerHTML="<circle cx="+x1+" cy="+y1+" r="+(6*Math.random())+" stroke='pink' stroke-width='2.5' fill='red'/>";  
+          myCircle.outerHTML = "<ellipse cx=" + x1 + " cy=" + y1 + " rx=" + (6 * Math.random()) + " ry=" + (3 * Math
+            .random()) + " fill='red' stroke='pink' stroke-width='2.5'/>"
         }
+        if (count > 0) {
+          show(x2, y2, length * rate, rate, ahl, count - 1);
+          show(x2, y2, length * rate, rate, ahr, count - 1);
+          show(x2, y2, length * rate, rate, all, count - 1);
+        }
+      }
+      show(x0, y0, length, rate, -Math.PI / 2, count);
     }
-    show(x0,y0,length,rate,-Math.PI/2,count);
-</script>
 
+    function downloadPhoto(form = "svg") {
+      // 导出最基础的svg
+      let html = d3.select("svg")
+        .attr("version", 1.1)
+        .attr("xmlns", "http://www.w3.org/2000/svg")
+        .attr("id", "svgdemo")
+        // .attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
+        .node().parentNode.innerHTML;
+      let imgsrc = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(html)));
+      // 从 String 对象中创建一个 base-64 编码的 ASCII 字符串，其中字符串中的每个字符都被视为一个二进制数据字节。
+      let image = new Image;
+      image.src = imgsrc;
+      if (form === "png") {
+        let svg = d3.select("#svgbox").node()
+        let img = '<img src="' + imgsrc + '">';
+        d3.select("#svgdataurl").html(img);
+        let boxWidth = svg.offsetWidth
+        let boxHeight = svg.offsetHeight
+        // console.log(svg, boxWidth);
+        let canvas = document.querySelector("canvas"),
+          context = canvas.getContext("2d");
+        canvas.height = boxHeight; //canvas高度变化时清空画布
+        canvas.width = boxWidth;
+        image.onload = function () {
+          context.drawImage(image, 0, 0);
+          let canvasdata = canvas.toDataURL("image/png");
+          let pngimg = '<img src="' + canvasdata + '">';
+          d3.select("#pngdataurl").html(pngimg);
+          let photo = document.createElement("a");
+          photo.download = "文字树.png";
+          photo.href = canvasdata;
+          document.body.appendChild(photo);
+          photo.click();
+        }
+      } else {
+        console.log(form);
+        image.onload = function () {
+          let photo = document.createElement("a");
+          photo.download = "文字树.svg";
+          photo.href = imgsrc;
+          document.body.appendChild(photo);
+          photo.click();
+        }
+      }
+    }
+    drawSvg()
+  </script>
 </body>
+
+</html>
